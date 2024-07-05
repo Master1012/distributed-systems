@@ -1,0 +1,198 @@
+syntax = "proto3";
+
+// Service definitions
+service MarketService {
+  rpc RegisterSeller(RegisterSellerRequest) returns (RegisterSellerResponse) {}
+  rpc SellItem(SellItemRequest) returns (SellItemResponse) {}
+  rpc UpdateItem(UpdateItemRequest) returns (UpdateItemResponse) {}
+  rpc DeleteItem(DeleteItemRequest) returns (DeleteItemResponse) {}
+  rpc DisplaySellerItems(DisplaySellerItemsRequest) returns (DisplaySellerItemsResponse) {}
+  rpc SearchItem(SearchItemRequest) returns (SearchItemResponse) {}
+  rpc BuyItem(BuyItemRequest) returns (BuyItemResponse) {}
+  rpc AddToWishlist(AddToWishlistRequest) returns (AddToWishlistResponse) {}
+  rpc RateItem(RateItemRequest) returns (RateItemResponse) {}
+  rpc RegisterBuyer(RegisterBuyerRequest) returns (RegisterBuyerResponse) {}
+}
+
+// Notification service
+service SellerNotificationService {
+  rpc NotifySeller(Notification) returns (Notification) {}
+}
+
+service BuyerNotificationService {
+  rpc NotifyClient(ItemUpdateNotification) returns (Notification) {}
+}
+
+
+// Message definitions
+message Address {
+  string ip = 1;
+  string port = 2;
+}
+
+message Product {
+  int32 id = 1;
+  string name = 2;
+  enum ItemCategory {
+    ANY = 0;
+    ELECTRONICS = 1;
+    FASHION = 2;
+    OTHERS = 3;
+  }
+  ItemCategory category = 3;
+  string description = 4;
+  int32 quantity = 5;
+  float price = 6;
+  float rating = 7;
+  Address seller_address = 8;
+}
+
+message ItemUpdateNotification {
+  Product product = 1;
+  string message = 2;
+}
+
+message SearchItemRequest {
+  string item_name = 1;
+  enum ItemCategory {
+    ANY = 0;
+    ELECTRONICS = 1;
+    FASHION = 2;
+    OTHERS = 3;
+  }
+  ItemCategory category = 2;
+  // string category = 2;
+}
+
+message BuyItemRequest {
+  int32 item_id = 1;
+  int32 quantity = 2;
+  Address buyer_address = 3;
+}
+
+message AddToWishlistRequest {
+  int32 item_id = 1;
+  Address buyer_address = 2;
+}
+
+message RateItemRequest {
+  int32 item_id = 1;
+  Address buyer_address = 2;
+  int32 rating = 3;
+}
+
+message Notification {
+  string message = 1;
+}
+
+
+// Request and Response message definitions for Seller operations
+message RegisterSellerRequest {
+  Address seller_address = 1;
+  string uuid = 2;
+}
+
+message RegisterSellerResponse {
+  enum Status {
+    SUCCESS = 0;
+    FAILED = 1;
+  }
+  Status status = 1;
+}
+
+message RegisterBuyerRequest {
+  Address buyer_address = 1;
+  string uuid = 2;
+}
+
+message RegisterBuyerResponse {
+  enum Status {
+    SUCCESS = 0;
+    FAILED = 1;
+  }
+  Status status = 1;
+}
+
+message SellItemRequest {
+  Product product = 1;
+  string seller_uuid = 2;
+}
+
+message SellItemResponse {
+  enum Status {
+    SUCCESS = 0;
+    FAILED = 1;
+  }
+  Status status = 1;
+  int32 item_id = 2;
+}
+
+message UpdateItemRequest {
+  int32 item_id = 1;
+  float new_price = 2;
+  int32 new_quantity = 3;
+  Address seller_address = 4;
+  string seller_uuid = 5;
+}
+
+message UpdateItemResponse {
+  enum Status {
+    SUCCESS = 0;
+    FAILED = 1;
+  }
+  Status status = 1;
+}
+
+message DeleteItemRequest {
+  int32 item_id = 1;
+  Address seller_address = 2;
+  string seller_uuid = 3;
+}
+
+message DeleteItemResponse {
+  enum Status {
+    SUCCESS = 0;
+    FAILED = 1;
+  }
+  Status status = 1;
+}
+
+message DisplaySellerItemsRequest {
+  Address seller_address = 1;
+  string seller_uuid = 2;
+}
+
+message DisplaySellerItemsResponse {
+  repeated Product products = 1;
+}
+
+// Request and Response message definitions for Buyer operations
+message SearchItemResponse {
+  repeated Product products = 1;
+}
+
+message BuyItemResponse {
+  enum Status {
+    SUCCESS = 0;
+    FAILED = 1;
+  }
+  Status status = 1;
+}
+
+message AddToWishlistResponse {
+  enum Status {
+    SUCCESS = 0;
+    FAILED = 1;
+  }
+  Status status = 1;
+}
+
+message RateItemResponse {
+  enum Status {
+    SUCCESS = 0;
+    FAILED = 1;
+  }
+  Status status = 1;
+}
+
+
