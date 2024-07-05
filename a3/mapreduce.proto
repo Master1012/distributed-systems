@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+message Centroid {
+  repeated double coordinates = 1;
+}
+
+message DataPoint {
+  int32 centroid_id = 1;
+  repeated double points = 2;
+}
+
+message MapTaskRequest {
+  int32 mapper_id = 1;
+  int32 num_mappers = 2;
+  int32 num_reducers = 3;
+  int32 num_iterations = 4;
+  string input_file_path = 5;
+  int32 start_index = 6;
+  int32 end_index = 7;
+  repeated Centroid centroids = 8;
+}
+
+message MapResponse {
+  string status = 1;
+  string message = 2;
+}
+
+message ReduceTaskRequest {
+  int32 reducer_id = 1;
+  int32 num_mappers = 2;
+  int32 num_reducers = 3;
+  repeated Centroid centroids = 4;
+}
+
+message ReduceTaskResponse {
+  bool success = 1;
+  string message = 2;
+  repeated Centroid centroids = 3;
+}
+
+message ReceiveKeyValuesRequest {
+  int32 reducer_id = 1;
+}
+
+message ReceiveKeyValuesResponse {
+  bool success = 1;
+  repeated DataPoint data_points = 2;
+}
+
+service KMeansMapReduce {
+  rpc MapTask(MapTaskRequest) returns (MapResponse);
+  rpc ReduceTask(ReduceTaskRequest) returns (ReduceTaskResponse);
+  rpc ReceiveKeyValues(ReceiveKeyValuesRequest) returns (ReceiveKeyValuesResponse);
+}
